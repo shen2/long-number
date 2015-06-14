@@ -41,7 +41,7 @@ class LongNumber {
     	}
     	
     	$digits = array();
-    	$digitWidth = 6;
+    	$digitWidth = PHP_INT_SIZE === 8 ? 12 : 6;
     	$strlen = strlen($decimal);
     	for($pos = 0; ($pos + 1) * $digitWidth < $strlen; $pos ++){
     		$digits[$pos] = (int) substr($decimal, - ($pos + 1) * $digitWidth, $digitWidth);
@@ -56,9 +56,14 @@ class LongNumber {
      * @return self;
      */
     public static function createFromBinary($binary, $signed = false){
-        $step = 11;
-        $digitWidth = 6;
-        
+        if (PHP_INT_SIZE === 8){
+            $step = 23;
+            $digitWidth = 12;
+        }
+        else{
+            $step = 11;
+            $digitWidth = 6;
+        }
         $bitComparer = (1 << $step) - 1;
         $base = pow(10, $digitWidth);
         
